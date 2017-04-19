@@ -1,0 +1,43 @@
+//
+//  PrefixHeader.pch
+//  sinaWeibo
+//
+//  Created by app on 17/4/17.
+//  Copyright © 2017年 Feizj. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+#import "weiBoViewController.h"
+#import "xiaoXiViewController.h"
+#import "addViewController.h"
+#import "findViewController.h"
+#import "meViewController.h"
+#import "hotPeopleViewController.h"
+#import "specialRecommendViewController.h"
+#import "amusementStarViewController.h"
+#import "localFamousPersonViewController.h"
+#import "hotTopicDetailViewController.h"
+#import "myBtn.h"
+#import "HttpRequest.h"
+#import "WeiboSDK.h"
+#import "WeiboUser.h"
+#import "WBHttpRequest.h"
+#import "WBHttpRequest+WeiboUser.h"
+#import "WBHttpRequest+WeiboShare.h"
+#import "WBHttpRequest+WeiboToken.h"
+#import "WBSDKBasicButton.h"
+#import "WBSDKRelationshipButton.h"
+#import "WBSDKCommentButton.h"
+#import "WeiboSDK+Statistics.h"
+
+#define  w [UIScreen mainScreen].bounds.size.width
+#define  h [UIScreen mainScreen].bounds.size.height
+#define kAppKey @"2412034927"
+#define dRedirectURL @"http://www.baidu.com"
+//#import "libWeiboSDK.a"
+//#import "WeiboSDK.bundle"
+#endif /* PrefixHeader_pch */
