@@ -47,7 +47,53 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    /************************************数据处理************************************************/
     
+    
+ 
+    
+    Token=[[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
+    
+    if (Token) {
+        NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/public_timeline.json?access_token=%@",Token];
+        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+            NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            
+            NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
+            
+            NSError *error = nil;
+            jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
+                                                         options:NSJSONReadingMutableContainers
+                          
+                          
+                                                           error:&error];
+            
+            
+            //NSLog(@"获取的微博总数 %ld",[[jsonObject objectForKey:@"statuses"] count]);
+            /**
+             *  获取用户
+             */
+            NSLog(@"ID -----%@",[[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"] );
+            
+            // weiboDetilString = [[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"];
+            weiboNumCount = [[jsonObject objectForKey:@"statuses"] count];
+            NSLog(@"%@",[jsonObject objectForKey:@"statuses"][0]);
+            [hotTableView reloadData];
+            
+            
+            
+            //            NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)firstObject];
+            //
+            //            NSString *newFielPath = [documentsPathstringByAppendingPathComponent:@"aa.txt” ];
+            //
+            
+        }];
+        
+        NSLog(@"finish to request!!!");
+    }
+    
+ /************************************⬆️************************************************/
   
    //NSLog(@"%@  ",[jsonObject objectForKey:)
     self.title = @"发现";
@@ -138,58 +184,6 @@
 //                                                                     error:&error];
 //    }];
 
-    /************************************数据处理************************************************/
-    
-    
-    
-    
-    
-    /************************************⬆️************************************************/
-    
-    
-    
-    
-    Token=[[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
-    
-    if (Token) {
-        NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/public_timeline.json?access_token=%@",Token];
-        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-            NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            
-            
-            NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
-            
-            NSError *error = nil;
-            jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
-                                                         options:NSJSONReadingMutableContainers
-                          
-                          
-                                                           error:&error];
-            
-            
-            //NSLog(@"获取的微博总数 %ld",[[jsonObject objectForKey:@"statuses"] count]);
-            /**
-             *  获取用户
-             */
-            NSLog(@"ID -----%@",[[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"] );
-            
-           // weiboDetilString = [[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"];
-            weiboNumCount = [[jsonObject objectForKey:@"statuses"] count];
-              NSLog(@"%@",[jsonObject objectForKey:@"statuses"][0]);
-            [hotTableView reloadData];
-          
-            
-            
-//            NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)firstObject];
-//            
-//            NSString *newFielPath = [documentsPathstringByAppendingPathComponent:@"aa.txt” ];
-//            
-            
-        }];
-        
-        NSLog(@"finish to request!!!");
-    }
-    
     
  }
 /**
