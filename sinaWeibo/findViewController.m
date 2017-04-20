@@ -7,6 +7,8 @@
 //
 
 #import "findViewController.h"
+#import "dataMoal.h"
+
 
 @interface findViewController ()
 
@@ -30,6 +32,10 @@
     NSString *weiboDetilString;
     CGSize weiboStringsize;
     NSMutableArray *statusesDic;
+    
+    
+    
+    NSMutableArray *modalArr;
 }
 /**
  *  在视图即将加载的时候，隐藏findViewController的navigationBar上面的所有东西，包括文字
@@ -41,100 +47,36 @@
     self.navigationController.navigationBar.hidden=YES;
     
     self.tabBarController.tabBar.hidden=NO;
-
-    
-
-    
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-        self.title = @"发现";
-    /**
-     控制点赞的，0 -》为点赞
-               1 -》已点赞
-     */
-    #pragma mark - 控制点赞的，0 -》为点赞   1 -》已点赞
-  
-    dataArr=[[NSMutableArray alloc]init];
-    fourseArr = [[NSMutableArray alloc]init];
-    dataArr2=[[NSMutableArray alloc]init];
-    fourseArr2= [[NSMutableArray alloc]init];
     
-    for (int i=0; i<20; i++) {
-        [dataArr addObject:@"0"];
-        [fourseArr addObject:@"+关注"];
-        [dataArr2 addObject:@"0"];
-        [fourseArr2 addObject:@"+关注"];
-          }
-  
-    NSLog(@"%@   nicaiciai",dataArr2);
-    #pragma mark -  通过BUtton来进入hotView，或者starView
+    [self initData];
     
-    /**
-     通过BUtton来进入hotView，或者starView
-     */
-    UIButton *hotBtn = [[UIButton alloc]initWithFrame:CGRectMake(w/2-60, 10, 40, 40)];
-    //hotBtn.backgroundColor = [UIColor purpleColor];
-    [hotBtn setTitle:@"热门" forState:normal];
-    [self.view addSubview:hotBtn];
-    [hotBtn addTarget:self action:@selector(goToHotView) forControlEvents:UIControlEventTouchUpInside];
+    [self initUI];
     
-    UIButton *starBtn = [[UIButton alloc]initWithFrame:CGRectMake(w/2+30, 10, 40, 40)];
-    //starBtn.backgroundColor = [UIColor redColor];
-    [starBtn setTitle:@"明星" forState:normal];
-    [self.view addSubview:starBtn];
-    [starBtn addTarget:self action:@selector(goToStarView) forControlEvents:UIControlEventTouchUpInside];
-    #pragma mark - 初始化UIScrollView
-    /**
-     *  初始化UIScrollView
-     */
-    hotOrStarView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 64, w, h)];
-    hotOrStarView.backgroundColor = [UIColor purpleColor];
-    hotOrStarView.delegate=self;
-    hotOrStarView.contentSize = CGSizeMake(2*w, h);
-    [self.view addSubview:hotOrStarView];
+    [self intiNet];
     
-    /**
-      测试UIScrollView是否可行的lab
-     */
-    UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(100, 100, 88, 100)];
-    lab.backgroundColor= [UIColor whiteColor];
-    [hotOrStarView addSubview:lab];
-    #pragma mark - 初始化，已经创建的hotTableView &  starTableView
-    /**
-     *初始化，已经创建的hotTableView &  starTableView
-     */
-    hotTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, w, h) style:UITableViewStyleGrouped];
-    hotTableView.delegate = self;
-    hotTableView.dataSource = self;
-    [hotOrStarView addSubview:hotTableView];
-    /**
-     *  初始化
-     *
-     *
-     */
-    starTableView = [[UITableView alloc]initWithFrame:CGRectMake(w, 0, w, h) style:UITableViewStyleGrouped];
-    starTableView.delegate = self;
-    starTableView.dataSource = self;
-    [hotOrStarView addSubview:starTableView];
-    
-    
-       temptableView=hotTableView;
+#pragma mark -  通过BUtton来进入hotView，或者starView
+}
+
+- (void)intiNet{
     /**
      *  网络请求
      */
-//    NSString *urlString=@"https://api.weibo.com/oauth2/access_token?client_id=2412034927&client_secret=9b6c3fcadd485c91451266b9959cef11&grant_type=authorization_code&redirect_uri=YOUR_REGISTERED_REDIRECT_URI&code=CODE";
-//    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-//        NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//        
-//        
-//        NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
-//        
-//        NSError *error = nil;
-//        NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
-//                                                                   options:NSJSONReadingMutableContainers
-//                                                                     error:&error];
-//    }];
+    //    NSString *urlString=@"https://api.weibo.com/oauth2/access_token?client_id=2412034927&client_secret=9b6c3fcadd485c91451266b9959cef11&grant_type=authorization_code&redirect_uri=YOUR_REGISTERED_REDIRECT_URI&code=CODE";
+    //    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+    //        NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    //
+    //
+    //        NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
+    //
+    //        NSError *error = nil;
+    //        NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
+    //                                                                   options:NSJSONReadingMutableContainers
+    //                                                                     error:&error];
+    //    }];
     
     
     /************************************数据处理************************************************/
@@ -158,6 +100,21 @@
                           
                           
                                                            error:&error];
+            
+            NSArray *arr = [jsonObject objectForKey:@"statuses"];
+            
+            for (int i=0; i<arr.count; i++) {
+                NSDictionary *dic=arr[i];
+                
+                dataMoal *modal=[[dataMoal alloc]init];
+                modal.text=dic[@"text"];
+                modal.user=dic[@"user"];
+                
+                
+                [modalArr addObject:modal];
+                
+            }
+            
             
             
             //NSLog(@"获取的微博总数 %ld",[[jsonObject objectForKey:@"statuses"] count]);
@@ -186,12 +143,92 @@
     /************************************⬆️************************************************/
     
     //NSLog(@"%@  ",[jsonObject objectForKey:)
+    
+    
+    
 
-    
-    
+}
 
+- (void)initUI{
+    /**
+     通过BUtton来进入hotView，或者starView
+     */
+    UIButton *hotBtn = [[UIButton alloc]initWithFrame:CGRectMake(w/2-60, 10, 40, 40)];
+    //hotBtn.backgroundColor = [UIColor purpleColor];
+    [hotBtn setTitle:@"热门" forState:normal];
+    [self.view addSubview:hotBtn];
+    [hotBtn addTarget:self action:@selector(goToHotView) forControlEvents:UIControlEventTouchUpInside];
     
- }
+    UIButton *starBtn = [[UIButton alloc]initWithFrame:CGRectMake(w/2+30, 10, 40, 40)];
+    //starBtn.backgroundColor = [UIColor redColor];
+    [starBtn setTitle:@"明星" forState:normal];
+    [self.view addSubview:starBtn];
+    [starBtn addTarget:self action:@selector(goToStarView) forControlEvents:UIControlEventTouchUpInside];
+#pragma mark - 初始化UIScrollView
+    /**
+     *  初始化UIScrollView
+     */
+    hotOrStarView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 64, w, h)];
+    hotOrStarView.backgroundColor = [UIColor purpleColor];
+    hotOrStarView.delegate=self;
+    hotOrStarView.contentSize = CGSizeMake(2*w, h);
+    [self.view addSubview:hotOrStarView];
+    
+    /**
+     测试UIScrollView是否可行的lab
+     */
+    UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(100, 100, 88, 100)];
+    lab.backgroundColor= [UIColor whiteColor];
+    [hotOrStarView addSubview:lab];
+#pragma mark - 初始化，已经创建的hotTableView &  starTableView
+    /**
+     *初始化，已经创建的hotTableView &  starTableView
+     */
+    hotTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, w, h) style:UITableViewStyleGrouped];
+    hotTableView.delegate = self;
+    hotTableView.dataSource = self;
+    [hotOrStarView addSubview:hotTableView];
+    /**
+     *  初始化
+     *
+     *
+     */
+    starTableView = [[UITableView alloc]initWithFrame:CGRectMake(w, 0, w, h) style:UITableViewStyleGrouped];
+    starTableView.delegate = self;
+    starTableView.dataSource = self;
+    [hotOrStarView addSubview:starTableView];
+    
+    
+    temptableView=hotTableView;
+
+}
+
+- (void)initData{
+    self.title = @"发现";
+    modalArr=[[NSMutableArray alloc]init];
+    /**
+     控制点赞的，0 -》为点赞
+     1 -》已点赞
+     */
+#pragma mark - 控制点赞的，0 -》为点赞   1 -》已点赞
+    
+    dataArr=[[NSMutableArray alloc]init];
+    fourseArr = [[NSMutableArray alloc]init];
+    dataArr2=[[NSMutableArray alloc]init];
+    fourseArr2= [[NSMutableArray alloc]init];
+    
+    for (int i=0; i<20; i++) {
+        [dataArr addObject:@"0"];
+        [fourseArr addObject:@"+关注"];
+        [dataArr2 addObject:@"0"];
+        [fourseArr2 addObject:@"+关注"];
+    }
+    
+    NSLog(@"%@   nicaiciai",dataArr2);
+}
+
+
+
 /**
  *  对 scrollView 偏移量 进行操作
  根据偏移量的不同抵达，不同的页面
@@ -234,7 +271,7 @@
 }
 #pragma mark - 控制cell的个数  获取微博的数量
 - (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return weiboNumCount;
+    return modalArr.count;
 }
 #pragma mark - 初始化 cell
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -332,7 +369,8 @@
             
         }
 #pragma mark - index & tag 共同组成一个二维向量，来确定 button 准确的位置
-        
+        dataMoal *modal =  modalArr[indexPath.row];
+
         /**
          * index & tag 共同组成一个二维向量，来确定 button 准确的位置
          * 先由 myBtn 中 index 的属性 确定 按钮所在的 cell 的行数
@@ -360,8 +398,12 @@
              导入第三方库，进行包装，将图片设置为 从URL 获取图片
          */
         UIButton *headBtn = [cell viewWithTag:666];
-        NSString *imgstring=[[[jsonObject objectForKey:@"statuses"][ indexPath.row ]  objectForKey:@"user"] objectForKey:@"avatar_large"];
-        [headBtn sd_setImageWithURL:[NSURL URLWithString:imgstring]forState:normal placeholderImage:nil];
+        
+        NSDictionary *dic = modal.user;
+        
+       NSString *imgString = [dic objectForKey:@"avatar_large"];
+//        NSString *imgstring=[[[jsonObject objectForKey:@"statuses"][ indexPath.row ]  objectForKey:@"user"] objectForKey:@"avatar_large"];
+        [headBtn sd_setImageWithURL:[NSURL URLWithString:imgString]forState:normal placeholderImage:nil];
        // [headBtn setImage:[UIImage imageNamed:@"tx"]  forState:normal];
         
         /**
@@ -388,13 +430,15 @@
 //        size.width
 
         UILabel *weiboDetilLab = [cell viewWithTag:9527];
-        weiboDetilLab.text = weiboDetilString;
+//        weiboDetilLab.text = weiboDetilString;
+        
+        weiboDetilLab.text=modal.text;
         NSLog(@"%@",weiboDetilString);
         /**
          *  获取用户名
          */
         UILabel *useName = [cell viewWithTag:98007];
-        useName.text =  [[[jsonObject objectForKey:@"statuses"][ indexPath.row ]  objectForKey:@"user"] objectForKey:@"name"];
+        useName.text =  [self getName:indexPath.row];
 
         
         
@@ -429,6 +473,8 @@
             /**
              *  创建时间戳，可以在网上获取，时间
              */
+           // NSString *string = [[NSString alloc]init];
+        
             
             NSDate *nowdate =  [NSDate dateWithTimeIntervalSince1970:19990909];
             NSDateFormatter *formatter2 = [[NSDateFormatter alloc] init];
@@ -537,6 +583,14 @@
     }
     
   }
+
+
+- (NSString *)getName:(NSInteger)aint {
+
+   NSString *str = [[[jsonObject objectForKey:@"statuses"][ aint ]  objectForKey:@"user"] objectForKey:@"name"];
+    return str;
+    
+}
 #pragma mark - 定义表格中每一个CELL的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     

@@ -33,6 +33,7 @@
 		DDED959E1E9F5544004B0FCA /* addViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDED959D1E9F5544004B0FCA /* addViewController.m */; };
 		DDED95A11E9F5555004B0FCA /* findViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDED95A01E9F5555004B0FCA /* findViewController.m */; };
 		DDED95A41E9F5561004B0FCA /* meViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DDED95A31E9F5561004B0FCA /* meViewController.m */; };
+		DDEE6D861EA88B44007CF4F9 /* dataMoal.m in Sources */ = {isa = PBXBuildFile; fileRef = DDEE6D851EA88B44007CF4F9 /* dataMoal.m */; };
 		DDF040211EA855E400C8A1C9 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF040011EA855E400C8A1C9 /* MKAnnotationView+WebCache.m */; };
 		DDF040221EA855E400C8A1C9 /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF040031EA855E400C8A1C9 /* NSData+ImageContentType.m */; };
 		DDF040231EA855E400C8A1C9 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF040051EA855E400C8A1C9 /* SDImageCache.m */; };
@@ -128,6 +129,8 @@
 		DDED95A01E9F5555004B0FCA /* findViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = findViewController.m; sourceTree = "<group>"; };
 		DDED95A21E9F5561004B0FCA /* meViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = meViewController.h; sourceTree = "<group>"; };
 		DDED95A31E9F5561004B0FCA /* meViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = meViewController.m; sourceTree = "<group>"; };
+		DDEE6D841EA88B44007CF4F9 /* dataMoal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dataMoal.h; sourceTree = "<group>"; };
+		DDEE6D851EA88B44007CF4F9 /* dataMoal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dataMoal.m; sourceTree = "<group>"; };
 		DDF040001EA855E400C8A1C9 /* MKAnnotationView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKAnnotationView+WebCache.h"; sourceTree = "<group>"; };
 		DDF040011EA855E400C8A1C9 /* MKAnnotationView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKAnnotationView+WebCache.m"; sourceTree = "<group>"; };
 		DDF040021EA855E400C8A1C9 /* NSData+ImageContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ImageContentType.h"; sourceTree = "<group>"; };
@@ -248,6 +251,8 @@
 		DD8052341EA46D01005FFC9F /* 发现页面 */ = {
 			isa = PBXGroup;
 			children = (
+				DDEE6D841EA88B44007CF4F9 /* dataMoal.h */,
+				DDEE6D851EA88B44007CF4F9 /* dataMoal.m */,
 				DDED959F1E9F5555004B0FCA /* findViewController.h */,
 				DDED95A01E9F5555004B0FCA /* findViewController.m */,
 				DDCB6FD51EA5A8F100DDDE0A /* 自定义 button */,
@@ -618,6 +623,7 @@
 				DDF0402A1EA855E400C8A1C9 /* UIButton+WebCache.m in Sources */,
 				DDFFEE431E9F50FA007B947F /* main.m in Sources */,
 				DDF040291EA855E400C8A1C9 /* SDWebImagePrefetcher.m in Sources */,
+				DDEE6D861EA88B44007CF4F9 /* dataMoal.m in Sources */,
 				DDF040251EA855E400C8A1C9 /* SDWebImageDecoder.m in Sources */,
 				DDF040231EA855E400C8A1C9 /* SDImageCache.m in Sources */,
 				DDF040241EA855E400C8A1C9 /* SDWebImageCompat.m in Sources */,
