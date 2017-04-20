@@ -33,6 +33,9 @@
 #import "WBSDKRelationshipButton.h"
 #import "WBSDKCommentButton.h"
 #import "WeiboSDK+Statistics.h"
+#import "UIImageView+WebCache.h"
+
+#import "UIButton+WebCache.h"
 
 #define  w [UIScreen mainScreen].bounds.size.width
 #define  h [UIScreen mainScreen].bounds.size.height

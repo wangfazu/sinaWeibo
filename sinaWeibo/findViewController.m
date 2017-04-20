@@ -29,6 +29,7 @@
     NSInteger weiboNumCount;
     NSString *weiboDetilString;
     CGSize weiboStringsize;
+    NSMutableArray *statusesDic;
 }
 /**
  *  在视图即将加载的时候，隐藏findViewController的navigationBar上面的所有东西，包括文字
@@ -47,56 +48,7 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    /************************************数据处理************************************************/
-    
-    
- 
-    
-    Token=[[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
-    
-    if (Token) {
-        NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/public_timeline.json?access_token=%@",Token];
-        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-            NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            
-            
-            NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
-            
-            NSError *error = nil;
-            jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
-                                                         options:NSJSONReadingMutableContainers
-                          
-                          
-                                                           error:&error];
-            
-            
-            //NSLog(@"获取的微博总数 %ld",[[jsonObject objectForKey:@"statuses"] count]);
-            /**
-             *  获取用户
-             */
-            NSLog(@"ID -----%@",[[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"] );
-            
-            // weiboDetilString = [[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"];
-            weiboNumCount = [[jsonObject objectForKey:@"statuses"] count];
-            NSLog(@"%@",[jsonObject objectForKey:@"statuses"][0]);
-            [hotTableView reloadData];
-            
-            
-            
-            //            NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)firstObject];
-            //
-            //            NSString *newFielPath = [documentsPathstringByAppendingPathComponent:@"aa.txt” ];
-            //
-            
-        }];
-        
-        NSLog(@"finish to request!!!");
-    }
-    
- /************************************⬆️************************************************/
-  
-   //NSLog(@"%@  ",[jsonObject objectForKey:)
-    self.title = @"发现";
+        self.title = @"发现";
     /**
      控制点赞的，0 -》为点赞
                1 -》已点赞
@@ -183,6 +135,60 @@
 //                                                                   options:NSJSONReadingMutableContainers
 //                                                                     error:&error];
 //    }];
+    
+    
+    /************************************数据处理************************************************/
+    
+    
+    
+    
+    Token=[[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
+    
+    if (Token) {
+        NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/public_timeline.json?access_token=%@",Token];
+        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+            NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            
+            NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
+            
+            NSError *error = nil;
+            jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
+                                                         options:NSJSONReadingMutableContainers
+                          
+                          
+                                                           error:&error];
+            
+            
+            //NSLog(@"获取的微博总数 %ld",[[jsonObject objectForKey:@"statuses"] count]);
+            /**
+             *  获取用户
+             */
+            NSLog(@"ID -----%@",[[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"] );
+            
+            // weiboDetilString = [[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"];
+            weiboNumCount = [[jsonObject objectForKey:@"statuses"] count];
+            NSLog(@"%@",[jsonObject objectForKey:@"statuses"][0]);
+            [hotTableView reloadData];
+            
+            
+            
+            //            NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)firstObject];
+            //
+            //            NSString *newFielPath = [documentsPathstringByAppendingPathComponent:@"aa.txt” ];
+            //
+            
+        }];
+        
+        NSLog(@"finish to request!!!");
+    }
+    
+    /************************************⬆️************************************************/
+    
+    //NSLog(@"%@  ",[jsonObject objectForKey:)
+
+    
+    
 
     
  }
@@ -264,18 +270,27 @@
             /**
              *  时间格式器
              */
+            NSString *timestring=[[jsonObject objectForKey:@"statuses"][ indexPath.row ]  objectForKey:@"created_at"];
+            /**
+             *    componentsSeparatedByString ：将字符串以 “空格” 分隔符进行分割
+             */
+            NSArray *timeArra = [timestring componentsSeparatedByString:@" "];
+            NSString *timeDisplay = [NSString stringWithFormat:@"%@  %@",timeArra[1],timeArra[2]];
+
             NSString *formatterString = @"yyyy-MM-dd HH:mm:ss";
             [formatter2 setDateFormat:formatterString];
             NSString *returnString = [formatter2 stringFromDate:nowdate];
             
-            usePushTime.text = returnString;
+            usePushTime.text = timeDisplay;
             usePushTime.textColor = [UIColor blackColor];
             //usePushTime.backgroundColor = [UIColor blackColor];
             UILabel *useFrom = [[UILabel alloc]initWithFrame:CGRectMake(w/2+2, 10+h/19, w/4, h/20)];
             [cell addSubview:useFrom];
-            useFrom.text = @"from China";
+            useFrom.text = @"from Iphone 9T";
             useFrom.textColor = [UIColor blackColor];
-            usePushTime.font = [UIFont systemFontOfSize:9];
+            usePushTime.font = [UIFont systemFontOfSize:17];
+            useFrom.font = [UIFont systemFontOfSize:10];
+
             //useFrom.backgroundColor = [UIColor blackColor];
 #pragma mark - 通过for循环创建三个按钮 =》 点赞.333，评论.334，转发.335 ;
             /**
@@ -342,9 +357,12 @@
         
         /**
          *  为 headBtn 添加 图片 通过[UIImage imageNamed:@"tx"] 这种格式来电用，因为 [UIImage imageNamed:@"tx"] 方法，返回一个一个 Image 的对象
+             导入第三方库，进行包装，将图片设置为 从URL 获取图片
          */
         UIButton *headBtn = [cell viewWithTag:666];
-        [headBtn setImage:[UIImage imageNamed:@"tx"]  forState:normal];
+        NSString *imgstring=[[[jsonObject objectForKey:@"statuses"][ indexPath.row ]  objectForKey:@"user"] objectForKey:@"avatar_large"];
+        [headBtn sd_setImageWithURL:[NSURL URLWithString:imgstring]forState:normal placeholderImage:nil];
+       // [headBtn setImage:[UIImage imageNamed:@"tx"]  forState:normal];
         
         /**
          *  对 添加关注 按钮，进行操作，点击是变为 已关注
@@ -359,6 +377,8 @@
          *  为微博设置正文内容
          */
         weiboDetilString =  [[jsonObject objectForKey:@"statuses"][ indexPath.row ]  objectForKey:@"text"];
+        //statusesDic = @{[jsonObject objectForKey:@"statuses"][indexPath.row]};
+        
         /**
          *  由于微博内容长度的不同，对CELL进行变换
          */
@@ -375,6 +395,8 @@
          */
         UILabel *useName = [cell viewWithTag:98007];
         useName.text =  [[[jsonObject objectForKey:@"statuses"][ indexPath.row ]  objectForKey:@"user"] objectForKey:@"name"];
+
+        
         
         cell.selectionStyle = UITableViewCellStyleDefault;
         return  cell;
@@ -413,6 +435,13 @@
             /**
              *  时间格式器
              */
+            
+            NSString *timestring;
+            /**
+             *    componentsSeparatedByString ：将字符串以 “空格” 分隔符进行分割
+             */
+          NSArray *timeArra = [timestring componentsSeparatedByString:@" "];
+            NSString *timeDisplay = [NSString stringWithFormat:@"%@  %@",timeArra[1],timeArra[2]];
             NSString *formatterString = @"yyyy-MM-dd HH:mm:ss";
             [formatter2 setDateFormat:formatterString];
             NSString *returnString = [formatter2 stringFromDate:nowdate];
