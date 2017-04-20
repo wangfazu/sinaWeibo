@@ -27,11 +27,13 @@
     NSMutableArray *fourseArr2;
     UITableView *temptableView ;
     NSString *Token;
+    NSString *status;
     NSDictionary *jsonObject;
     NSInteger weiboNumCount;
     NSString *weiboDetilString;
     CGSize weiboStringsize;
     NSMutableArray *statusesDic;
+    
     
     
     
@@ -57,6 +59,38 @@
     [self initUI];
     
     [self intiNet];
+    /**
+     *  POST 方法请求 。可以上传微博内容去网络
+     */
+    status = @"| 巴塞罗那barcelona | CHURROS（吉事果）是西班牙非常传统的甜点，和中国的油条有异曲同工之妙。油炸好的吉事果撒上细白糖再沾热巧克力是最原滋原味的吃法，也有不少咖啡店喜欢将其与冰淇淋、奶油搭配在一起。虽然巴塞罗那有非常多小店售卖吉事果，但并不是每一家都足够好吃，在这里分享两家我最喜欢";
+    if (Token&&status) {
+        NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/update.json"];
+        NSURLSession *sessin = [NSURLSession sharedSession];
+        NSMutableURLRequest *req=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+        req.HTTPMethod=@"POST";
+        req.HTTPBody=[[NSString stringWithFormat:@"access_token=%@&status=%@",Token,status] dataUsingEncoding:NSUTF8StringEncoding];
+      NSURLSessionDataTask *tast =  [sessin dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                      NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+            NSLog(@"哈哈哈  哈哈   %@",response);
+            
+        }];
+        [tast resume];
+
+//        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+//            NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//            
+//            
+//            NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
+//            
+//            NSError *error = nil;
+//            jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
+//                                                         options:NSJSONReadingMutableContainers
+//                          
+//                          
+//                                                           error:&error];}];
+         }
+    
     
 #pragma mark -  通过BUtton来进入hotView，或者starView
 }
@@ -112,7 +146,7 @@
                 
                 
                 [modalArr addObject:modal];
-                
+              //  NSLog(@"%@ ",modalArr[i]);
             }
             
             

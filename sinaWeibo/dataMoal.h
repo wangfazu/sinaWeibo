@@ -11,5 +11,4 @@
 @interface dataMoal : NSObject
 @property(nonatomic,retain)NSString *text;
 @property(nonatomic,retain)NSMutableDictionary *user;
-
 @end
