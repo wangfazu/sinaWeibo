@@ -47,6 +47,10 @@
 		DD30FC061EA9ABB400D8A494 /* UIScrollView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = DD30FBF01EA9ABB300D8A494 /* UIScrollView+MJExtension.m */; };
 		DD30FC071EA9ABB400D8A494 /* UIScrollView+MJRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = DD30FBF21EA9ABB300D8A494 /* UIScrollView+MJRefresh.m */; };
 		DD30FC081EA9ABB400D8A494 /* UIView+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = DD30FBF41EA9ABB300D8A494 /* UIView+MJExtension.m */; };
+		DD30FC4C1EA9EFB500D8A494 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DD30FC4B1EA9EFB500D8A494 /* icon.png */; };
+		DD30FC4E1EAA055D00D8A494 /* 点赞.png in Resources */ = {isa = PBXBuildFile; fileRef = DD30FC4D1EAA055D00D8A494 /* 点赞.png */; };
+		DD30FC501EAA087D00D8A494 /* 点赞2.png in Resources */ = {isa = PBXBuildFile; fileRef = DD30FC4F1EAA087D00D8A494 /* 点赞2.png */; };
+		DD30FC521EAA088300D8A494 /* 踩.png in Resources */ = {isa = PBXBuildFile; fileRef = DD30FC511EAA088300D8A494 /* 踩.png */; };
 		DD80523C1EA46E62005FFC9F /* hotPeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD80523B1EA46E62005FFC9F /* hotPeopleViewController.m */; };
 		DD80523F1EA46EBE005FFC9F /* specialRecommendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD80523E1EA46EBE005FFC9F /* specialRecommendViewController.m */; };
 		DD8052421EA46F02005FFC9F /* amusementStarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8052411EA46F02005FFC9F /* amusementStarViewController.m */; };
@@ -184,6 +188,10 @@
 		DD30FBF21EA9ABB300D8A494 /* UIScrollView+MJRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+MJRefresh.m"; sourceTree = "<group>"; };
 		DD30FBF31EA9ABB300D8A494 /* UIView+MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MJExtension.h"; sourceTree = "<group>"; };
 		DD30FBF41EA9ABB300D8A494 /* UIView+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MJExtension.m"; sourceTree = "<group>"; };
+		DD30FC4B1EA9EFB500D8A494 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		DD30FC4D1EAA055D00D8A494 /* 点赞.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "点赞.png"; sourceTree = "<group>"; };
+		DD30FC4F1EAA087D00D8A494 /* 点赞2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "点赞2.png"; sourceTree = "<group>"; };
+		DD30FC511EAA088300D8A494 /* 踩.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "踩.png"; sourceTree = "<group>"; };
 		DD8052321EA468B5005FFC9F /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrefixHeader.pch; path = ../PrefixHeader.pch; sourceTree = "<group>"; };
 		DD80523A1EA46E62005FFC9F /* hotPeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hotPeopleViewController.h; sourceTree = "<group>"; };
 		DD80523B1EA46E62005FFC9F /* hotPeopleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hotPeopleViewController.m; sourceTree = "<group>"; };
@@ -532,6 +540,10 @@
 		DD97C7521EA4BE55007B8EDB /* 首页&头像~图片 */ = {
 			isa = PBXGroup;
 			children = (
+				DD30FC4B1EA9EFB500D8A494 /* icon.png */,
+				DD30FC4D1EAA055D00D8A494 /* 点赞.png */,
+				DD30FC4F1EAA087D00D8A494 /* 点赞2.png */,
+				DD30FC511EAA088300D8A494 /* 踩.png */,
 				DD97C7501EA4BE46007B8EDB /* tx.png */,
 				DDFFEE741E9F52E3007B947F /* top.jpg */,
 			);
@@ -771,10 +783,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD30FC521EAA088300D8A494 /* 踩.png in Resources */,
+				DD30FC4E1EAA055D00D8A494 /* 点赞.png in Resources */,
 				DD97C7511EA4BE46007B8EDB /* tx.png in Resources */,
 				DDFFEE751E9F52E3007B947F /* top.jpg in Resources */,
 				DD30FC031EA9ABB400D8A494 /* MJRefresh.bundle in Resources */,
 				DDFFEE511E9F50FA007B947F /* LaunchScreen.storyboard in Resources */,
+				DD30FC501EAA087D00D8A494 /* 点赞2.png in Resources */,
+				DD30FC4C1EA9EFB500D8A494 /* icon.png in Resources */,
 				DDFFEE4E1E9F50FA007B947F /* Assets.xcassets in Resources */,
 				DDFFEE4C1E9F50FA007B947F /* Main.storyboard in Resources */,
 				DD2A58AD1EA70DDB00A24A93 /* WeiboSDK.bundle in Resources */,

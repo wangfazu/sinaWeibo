@@ -19,8 +19,9 @@
     self.title = @"微博";
     // Do any additional setup after loading the view.
     
-    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(applicationWidth/2-40, applicationHeight/2-40, 80, 80)];
-    btn.backgroundColor = [UIColor blueColor];
+    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(applicationWidth/2-80, applicationHeight/2-80, 160, 160)];
+    btn.backgroundColor = [UIColor grayColor];
+    [btn setTitle:@"get access_Token" forState:normal];
     [btn addTarget:self action:@selector(btnclick) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:btn];

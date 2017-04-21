@@ -112,23 +112,23 @@
     UITabBarController *tabBar = [[ UITabBarController alloc]init];
     
     weiBoViewController *weibo = [[weiBoViewController alloc]init];
-    weibo.view.backgroundColor = [UIColor blackColor];
+    weibo.view.backgroundColor = [UIColor  grayColor];
     weibo.tabBarItem.title = @"微博";
     
     xiaoXiViewController *xiaoXi = [[xiaoXiViewController alloc]init];
-    xiaoXi.view.backgroundColor = [UIColor blueColor];
+    xiaoXi.view.backgroundColor = [UIColor grayColor];
     xiaoXi.tabBarItem.title = @"消息";
     
     addViewController *add = [[addViewController alloc]init];
-    add.view.backgroundColor = [UIColor whiteColor];
+    add.view.backgroundColor = [UIColor grayColor];
     add.tabBarItem.title =@"+";
     
     findViewController *find = [[findViewController alloc]init];
-    find.view.backgroundColor = [UIColor blueColor];
+    find.view.backgroundColor = [UIColor grayColor];
     find.tabBarItem.title = @"发现";
     
     meViewController *me = [[meViewController alloc]init];
-    me.view.backgroundColor = [UIColor greenColor];
+    me.view.backgroundColor = [UIColor grayColor];
     me.tabBarItem.title = @"我";
     
     /**

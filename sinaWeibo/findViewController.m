@@ -174,10 +174,10 @@
                           
                                                            error:&error];
             
-            NSArray *arr = [jsonObject objectForKey:@"statuses"];
+            NSArray *arrcc = [jsonObject objectForKey:@"statuses"];
             
-            for (int i=0; i<arr.count; i++) {
-                NSDictionary *dic=arr[i];
+            for (int i=0; i<arrcc.count; i++) {
+                NSDictionary *dic=arrcc[i];
                 
                 dataMoal *modal=[[dataMoal alloc]init];
                 modal.text=dic[@"text"];
@@ -246,7 +246,7 @@
      *  初始化UIScrollView
      */
     hotOrStarView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 64, applicationWidth, applicationHeight)];
-    hotOrStarView.backgroundColor = [UIColor purpleColor];
+    hotOrStarView.backgroundColor = [UIColor grayColor];
     hotOrStarView.delegate=self;
     hotOrStarView.contentSize = CGSizeMake(2*applicationWidth, applicationHeight);
     [self.view addSubview:hotOrStarView];
@@ -256,7 +256,7 @@
      测试UIScrollView是否可行的lab
      */
     UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(100, 100, 88, 100)];
-    lab.backgroundColor= [UIColor whiteColor];
+    lab.backgroundColor= [UIColor grayColor];
     [hotOrStarView addSubview:lab];
 #pragma mark - 初始化，已经创建的hotTableView &  starTableView
     /**
@@ -278,75 +278,78 @@
 hotTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
     NSLog(@"刷新");
     
+    
+    /**
+     *  再次发起微博请求，获取自己的微博
+     */
+    Token=[[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
+    
+    page=1;
+    if (Token) {//https://api.weibo.com/2/statuses/home_timeline.json
+        NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/home_timeline.json?access_token=%@",Token];
+        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+            NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            
+            
+            NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
+            
+            NSError *error = nil;
+            jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
+                                                         options:NSJSONReadingMutableContainers
+                          
+                          
+                                                           error:&error];
+            NSArray *arrcc = [jsonObject objectForKey:@"statuses"];
+//            if (arr.count==19) {
+//                [modalArr removeAllObjects]  ;
+//            }
+            
+            
+                            [modalArr removeAllObjects];
+            for (int i=0; i<arrcc.count; i++) {
+                NSDictionary *dic=arrcc[i];
+                
+                dataMoal *modal=[[dataMoal alloc]init];
+
+                modal.text=dic[@"text"];
+                modal.user=dic[@"user"];
+                
+                
+                [modalArr addObject:modal];
+                //  NSLog(@"%@ ",modalArr[i]);
+            }
+            
+            
+            
+            //NSLog(@"获取的微博总数 %ld",[[jsonObject objectForKey:@"statuses"] count]);
+            /**
+             *  获取用户
+             */
+            NSLog(@"ID -----%@",[[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"] );
+            
+            // weiboDetilString = [[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"];
+            weiboNumCount = [[jsonObject objectForKey:@"statuses"] count];
+            NSLog(@"%@",[jsonObject objectForKey:@"statuses"][0]);
+            [hotTableView reloadData];
+            
+            
+            
+            //            NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)firstObject];
+            //
+            //            NSString *newFielPath = [documentsPathstringByAppendingPathComponent:@"aa.txt” ];
+            //
+            
+        }];
+        
+        NSLog(@"finish to refrsh!!!");
+    }
     [hotTableView.mj_header endRefreshing];
     
 }];
     
     hotTableView.mj_footer=[MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
         NSLog(@"jiazaignegduo");
-        /**
-         *  再次发起微博，另外20条的请求
-         */
-        Token=[[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
-        page=2;
-        if (Token) {
-            NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/public_timeline.json?access_token=%@&page=%ld",Token,page];
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-                NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                
-                
-                NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
-                
-                NSError *error = nil;
-                jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
-                                                             options:NSJSONReadingMutableContainers
-                              
-                              
-                                                               error:&error];
-                
-                NSArray *arr = [jsonObject objectForKey:@"statuses"];
-                if (arr==nil) {
-                    return ;
-                }
-                
-                
-//                [modalArr removeAllObjects];
-                for (int i=0; i<arr.count; i++) {
-                    NSDictionary *dic=arr[i];
-                    
-                    dataMoal *modal=[[dataMoal alloc]init];
-                    modal.text=dic[@"text"];
-                    modal.user=dic[@"user"];
-                    
-                    
-                    [modalArr addObject:modal];
-                    //  NSLog(@"%@ ",modalArr[i]);
-                }
-                
-                
-                
-                //NSLog(@"获取的微博总数 %ld",[[jsonObject objectForKey:@"statuses"] count]);
-                /**
-                 *  获取用户
-                 */
-                NSLog(@"ID -----%@",[[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"] );
-                
-                // weiboDetilString = [[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"];
-                weiboNumCount = [[jsonObject objectForKey:@"statuses"] count];
-                NSLog(@"%@",[jsonObject objectForKey:@"statuses"][0]);
-                [hotTableView reloadData];
-                
-                
-                
-                //            NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)firstObject];
-                //
-                //            NSString *newFielPath = [documentsPathstringByAppendingPathComponent:@"aa.txt” ];
-                //
-                
-            }];
-            
-            NSLog(@"finish to refrsh!!!");
-        }
+       
         
         [hotTableView reloadData];
         [hotTableView.mj_footer endRefreshing];
@@ -438,6 +441,7 @@ hotTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
     
     return modalArr.count;
 }
+
 #pragma mark - 初始化 cell
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
  #pragma mark -  /*****************************热门  tableView***************/
@@ -499,8 +503,8 @@ hotTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
              *  通过for循环创建三个按钮 =》 点赞，评论，转发
              */
             for (int i=0; i<3; i++) {
-                myBtn *goodSendCommentBtn = [[myBtn alloc]initWithFrame:CGRectMake(i*applicationWidth/3.1+5, applicationHeight*3/5-30, applicationWidth/3.1, 25)];
-                goodSendCommentBtn.backgroundColor = [UIColor orangeColor];
+                myBtn *goodSendCommentBtn = [[myBtn alloc]initWithFrame:CGRectMake(i*applicationWidth/3.1+60, applicationHeight*3/5-43, 55, 38)];
+                //goodSendCommentBtn.backgroundColor = [UIColor orangeColor];
                 
                 goodSendCommentBtn.tag = 333+i;
                 goodSendCommentBtn.index = indexPath.row ;;
@@ -545,6 +549,10 @@ hotTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
         goodbtn.index=indexPath.row;
         NSString *str =[dataArr objectAtIndex:indexPath.row];
         [goodbtn setTitle:str forState:normal];
+        
+        UIImage *goodImg=[UIImage imageNamed:@"点赞2"];
+        
+        [goodbtn setImage:goodImg  forState:normal];
         [goodbtn addTarget:self action:@selector(goodbtnClick:) forControlEvents:UIControlEventTouchUpInside];
         
         myBtn *pinglunbtn = [cell viewWithTag:334];
@@ -774,14 +782,17 @@ hotTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
 }
 #pragma mark - 定义表格的头部
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    self.view.backgroundColor = [ UIColor grayColor];
     if (tableView == starTableView) {
-        for (int i = 0; i<4; i++) {
+        self.view.backgroundColor = [ UIColor grayColor];
+
+                for (int i = 0; i<4; i++) {
 #pragma mark - 创建四个 Button分别对应 “热门人物1000，特别推荐1001，娱乐明星1002，当地名人1003”
             /**
               创建四个 Button 分别对应 “热门人物，特别推荐，娱乐明星，当地名人”
              */
             UIButton *btttn = [[UIButton alloc]initWithFrame:CGRectMake(14+applicationWidth/4*i, 44, 70, 70)];
-            btttn.backgroundColor = [UIColor redColor];
+            btttn.backgroundColor = [UIColor grayColor];
             btttn.tag=1000+i;
             [btttn addTarget:self action:@selector(btttnClick:) forControlEvents:UIControlEventTouchUpInside];
             [tableView addSubview:btttn];
@@ -821,6 +832,7 @@ hotTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
             [btnnn1 addTarget:self action:@selector(goToHotTopicalDetialViewClick:) forControlEvents:UIControlEventTouchUpInside];
               arr = @[@"#朗读者王源#",@"#咸鱼如我#",@"#徐海乔生日快乐#",@"更多热门话题"];
             [btnnn1 setTitle:arr[i] forState:normal];
+            
             [tableView addSubview:btnnn1];
         }
         
@@ -928,6 +940,7 @@ hotTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
 //    [hotTableView reloadData];
     if (temptableView ==  hotTableView) {
         [dataArr replaceObjectAtIndex:btn.index withObject:@"已点赞"];
+        UIImage *goodImg=[UIImage imageNamed:@"踩"];
         [hotTableView reloadData];
     }else if (temptableView == starTableView){
         [dataArr2 replaceObjectAtIndex:btn.index withObject:@"已点赞"];

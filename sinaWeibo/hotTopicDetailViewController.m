@@ -19,6 +19,7 @@
     // Do any additional setup after loading the view.
     self.title = @"热门话题";
     self.title = self.array;
+  
     
     /**
      *  取消对 navigationBar 的隐藏
