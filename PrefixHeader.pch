@@ -37,8 +37,9 @@
 
 #import "UIButton+WebCache.h"
 
-#define  w [UIScreen mainScreen].bounds.size.width
-#define  h [UIScreen mainScreen].bounds.size.height
+#define  applicationWidth [UIScreen mainScreen].bounds.size.width
+#define  applicationHeight [UIScreen mainScreen].bounds.size.height
+
 #define kAppKey @"2412034927"
 #define dRedirectURL @"http://www.baidu.com"
 //#import "libWeiboSDK.a"

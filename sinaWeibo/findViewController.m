@@ -8,8 +8,8 @@
 
 #import "findViewController.h"
 #import "dataMoal.h"
-
-
+#import "AFNetworking.h"
+#import "MJRefresh.h"
 @interface findViewController ()
 
 @end
@@ -33,6 +33,7 @@
     NSString *weiboDetilString;
     CGSize weiboStringsize;
     NSMutableArray *statusesDic;
+    NSInteger page;
     
     
     
@@ -62,20 +63,58 @@
     /**
      *  POST 方法请求 。可以上传微博内容去网络
      */
-    status = @"| 巴塞罗那barcelona | CHURROS（吉事果）是西班牙非常传统的甜点，和中国的油条有异曲同工之妙。油炸好的吉事果撒上细白糖再沾热巧克力是最原滋原味的吃法，也有不少咖啡店喜欢将其与冰淇淋、奶油搭配在一起。虽然巴塞罗那有非常多小店售卖吉事果，但并不是每一家都足够好吃，在这里分享两家我最喜欢";
+    status = @"| 巴塞罗那barcelona | 4月20日19时41分，搭载着天舟一号货运飞船的长征七号遥二运载火箭，在我国文昌航天发射场点火发射，约596秒后。";
     if (Token&&status) {
         NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/update.json"];
-        NSURLSession *sessin = [NSURLSession sharedSession];
-        NSMutableURLRequest *req=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-        req.HTTPMethod=@"POST";
-        req.HTTPBody=[[NSString stringWithFormat:@"access_token=%@&status=%@",Token,status] dataUsingEncoding:NSUTF8StringEncoding];
-      NSURLSessionDataTask *tast =  [sessin dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                      NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        
+        AFHTTPSessionManager *ma=[AFHTTPSessionManager manager];
+        
+        UIImage *img=[UIImage imageNamed:@"tx.png"];
+        
+    NSData *data =    UIImagePNGRepresentation(img);
+        /**
+         *  post 文件上去
+         */
+//        ma.requestSerializer=[AFJSONRequestSerializer serializer];
+        [ma POST:@"https://upload.api.weibo.com/2/statuses/upload.json" parameters:@{@"access_token":Token,@"status":status,@"pic":data} progress:^(NSProgress * _Nonnull uploadProgress) {
+            NSLog(@"%@",uploadProgress);
 
-            NSLog(@"哈哈哈  哈哈   %@",response);
-            
+        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSLog(@"%@",responseObject);
+
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"%@",error);
+
         }];
-        [tast resume];
+        
+        /**
+         *  post 文件上去
+         */
+//        [ma POST:@"https://upload.api.weibo.com/2/statuses/upload.json" parameters:@{@"access_token":Token,@"status":status} constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+//            [formData appendPartWithFormData:data name:@"pic"];
+//        } progress:^(NSProgress * _Nonnull uploadProgress) {
+//            NSLog(@"%@",uploadProgress);
+//
+//        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//            NSLog(@"%@",responseObject);
+//
+//        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//            NSLog(@"%@",error);
+//
+//        }];
+        
+//        
+//        NSURLSession *sessin = [NSURLSession sharedSession];
+//        NSMutableURLRequest *req=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+//        req.HTTPMethod=@"POST";
+//        req.HTTPBody=[[NSString stringWithFormat:@"access_token=%@&status=%@",Token,status] dataUsingEncoding:NSUTF8StringEncoding];
+//      NSURLSessionDataTask *tast =  [sessin dataTaskWithRequest:req completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//                      NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//
+//            NSLog(@"哈哈哈  哈哈   %@",response);
+//            
+//        }];
+//        [tast resume];
 
 //        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
 //            NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -183,17 +222,21 @@
 
 }
 
+- (void)refres{
+    NSLog(@"开始双馨");
+}
+
 - (void)initUI{
     /**
      通过BUtton来进入hotView，或者starView
      */
-    UIButton *hotBtn = [[UIButton alloc]initWithFrame:CGRectMake(w/2-60, 10, 40, 40)];
+    UIButton *hotBtn = [[UIButton alloc]initWithFrame:CGRectMake(applicationWidth/2-60, 10, 40, 40)];
     //hotBtn.backgroundColor = [UIColor purpleColor];
     [hotBtn setTitle:@"热门" forState:normal];
     [self.view addSubview:hotBtn];
     [hotBtn addTarget:self action:@selector(goToHotView) forControlEvents:UIControlEventTouchUpInside];
     
-    UIButton *starBtn = [[UIButton alloc]initWithFrame:CGRectMake(w/2+30, 10, 40, 40)];
+    UIButton *starBtn = [[UIButton alloc]initWithFrame:CGRectMake(applicationWidth/2+30, 10, 40, 40)];
     //starBtn.backgroundColor = [UIColor redColor];
     [starBtn setTitle:@"明星" forState:normal];
     [self.view addSubview:starBtn];
@@ -202,11 +245,12 @@
     /**
      *  初始化UIScrollView
      */
-    hotOrStarView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 64, w, h)];
+    hotOrStarView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 64, applicationWidth, applicationHeight)];
     hotOrStarView.backgroundColor = [UIColor purpleColor];
     hotOrStarView.delegate=self;
-    hotOrStarView.contentSize = CGSizeMake(2*w, h);
+    hotOrStarView.contentSize = CGSizeMake(2*applicationWidth, applicationHeight);
     [self.view addSubview:hotOrStarView];
+    
     
     /**
      测试UIScrollView是否可行的lab
@@ -218,16 +262,102 @@
     /**
      *初始化，已经创建的hotTableView &  starTableView
      */
-    hotTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, w, h) style:UITableViewStyleGrouped];
+    hotTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, applicationWidth, applicationHeight-64-20) style:UITableViewStyleGrouped];
     hotTableView.delegate = self;
     hotTableView.dataSource = self;
     [hotOrStarView addSubview:hotTableView];
+    
+    /**
+     *   刷新的使用
+     1.导入第三方库
+     2.调用所谓的方法
+     3.object.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^  =》对于头部的刷新
+     4.object.mj_footer=[MJRefreshBackNormalFooter footerWithRefreshingBlock:^   =》对于尾部的刷新
+     5.[object.相应的属性 endRefreshing]; =》结束刷新
+     */
+hotTableView.mj_header=[MJRefreshNormalHeader headerWithRefreshingBlock:^{
+    NSLog(@"刷新");
+    
+    [hotTableView.mj_header endRefreshing];
+    
+}];
+    
+    hotTableView.mj_footer=[MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
+        NSLog(@"jiazaignegduo");
+        /**
+         *  再次发起微博，另外20条的请求
+         */
+        Token=[[NSUserDefaults standardUserDefaults]objectForKey:@"token"];
+        page=2;
+        if (Token) {
+            NSString *urlString=[NSString stringWithFormat:@"https://api.weibo.com/2/statuses/public_timeline.json?access_token=%@&page=%ld",Token,page];
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlString]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                
+                
+                NSData *aJsonData = [responseString dataUsingEncoding:NSUTF8StringEncoding];
+                
+                NSError *error = nil;
+                jsonObject = [NSJSONSerialization JSONObjectWithData:aJsonData
+                                                             options:NSJSONReadingMutableContainers
+                              
+                              
+                                                               error:&error];
+                
+                NSArray *arr = [jsonObject objectForKey:@"statuses"];
+                if (arr==nil) {
+                    return ;
+                }
+                
+                
+//                [modalArr removeAllObjects];
+                for (int i=0; i<arr.count; i++) {
+                    NSDictionary *dic=arr[i];
+                    
+                    dataMoal *modal=[[dataMoal alloc]init];
+                    modal.text=dic[@"text"];
+                    modal.user=dic[@"user"];
+                    
+                    
+                    [modalArr addObject:modal];
+                    //  NSLog(@"%@ ",modalArr[i]);
+                }
+                
+                
+                
+                //NSLog(@"获取的微博总数 %ld",[[jsonObject objectForKey:@"statuses"] count]);
+                /**
+                 *  获取用户
+                 */
+                NSLog(@"ID -----%@",[[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"] );
+                
+                // weiboDetilString = [[jsonObject objectForKey:@"statuses"][0]  objectForKey:@"text"];
+                weiboNumCount = [[jsonObject objectForKey:@"statuses"] count];
+                NSLog(@"%@",[jsonObject objectForKey:@"statuses"][0]);
+                [hotTableView reloadData];
+                
+                
+                
+                //            NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)firstObject];
+                //
+                //            NSString *newFielPath = [documentsPathstringByAppendingPathComponent:@"aa.txt” ];
+                //
+                
+            }];
+            
+            NSLog(@"finish to refrsh!!!");
+        }
+        
+        [hotTableView reloadData];
+        [hotTableView.mj_footer endRefreshing];
+        
+    }];
     /**
      *  初始化
      *
      *
      */
-    starTableView = [[UITableView alloc]initWithFrame:CGRectMake(w, 0, w, h) style:UITableViewStyleGrouped];
+    starTableView = [[UITableView alloc]initWithFrame:CGRectMake(applicationWidth, 0, applicationWidth, applicationHeight) style:UITableViewStyleGrouped];
     starTableView.delegate = self;
     starTableView.dataSource = self;
     [hotOrStarView addSubview:starTableView];
@@ -299,12 +429,13 @@
      *  用动画效果来实现，动画效果
      */
         [UIView animateWithDuration:0.75 animations:^{
-        hotOrStarView.contentOffset = CGPointMake(w, 0);
+        hotOrStarView.contentOffset = CGPointMake(applicationWidth, 0);
     }];
     temptableView=starTableView;
 }
 #pragma mark - 控制cell的个数  获取微博的数量
 - (NSInteger )tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
     return modalArr.count;
 }
 #pragma mark - 初始化 cell
@@ -323,13 +454,13 @@
             /**
              创建用户的 ID
              */
-            UILabel *useID = [[UILabel alloc]initWithFrame:CGRectMake(w/4, 10, w/2, h/20)];
+            UILabel *useID = [[UILabel alloc]initWithFrame:CGRectMake(applicationWidth/4, 10, applicationWidth/2, applicationHeight/20)];
             [cell addSubview:useID];
           //  useID.text = @"海贼王";
             useID.tag = 98007;
             useID.textColor = [UIColor redColor];
             // useID.backgroundColor = [UIColor blackColor];
-            UILabel *usePushTime = [[UILabel alloc]initWithFrame:CGRectMake(w/4, 10+h/19, w/4, h/20)];
+            UILabel *usePushTime = [[UILabel alloc]initWithFrame:CGRectMake(applicationWidth/4, 10+applicationHeight/19, applicationWidth/4, applicationHeight/20)];
             [cell addSubview:usePushTime ];
 #pragma mark - 创建时间戳，可以在网上获取，时间
             /**
@@ -355,7 +486,7 @@
             usePushTime.text = timeDisplay;
             usePushTime.textColor = [UIColor blackColor];
             //usePushTime.backgroundColor = [UIColor blackColor];
-            UILabel *useFrom = [[UILabel alloc]initWithFrame:CGRectMake(w/2+2, 10+h/19, w/4, h/20)];
+            UILabel *useFrom = [[UILabel alloc]initWithFrame:CGRectMake(applicationWidth/2+2, 10+applicationHeight/19, applicationWidth/4, applicationHeight/20)];
             [cell addSubview:useFrom];
             useFrom.text = @"from Iphone 9T";
             useFrom.textColor = [UIColor blackColor];
@@ -368,7 +499,7 @@
              *  通过for循环创建三个按钮 =》 点赞，评论，转发
              */
             for (int i=0; i<3; i++) {
-                myBtn *goodSendCommentBtn = [[myBtn alloc]initWithFrame:CGRectMake(i*w/3.1+5, h*3/5-30, w/3.1, 25)];
+                myBtn *goodSendCommentBtn = [[myBtn alloc]initWithFrame:CGRectMake(i*applicationWidth/3.1+5, applicationHeight*3/5-30, applicationWidth/3.1, 25)];
                 goodSendCommentBtn.backgroundColor = [UIColor orangeColor];
                 
                 goodSendCommentBtn.tag = 333+i;
@@ -380,21 +511,21 @@
             /**
              创建头像，的按钮，并设置tag
              */
-            UIButton *headBtn = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, w/6, h/10)];
+            UIButton *headBtn = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, applicationWidth/6, applicationHeight/10)];
             headBtn.tag=666;
-            headBtn.layer.cornerRadius = h/20 ;
+            headBtn.layer.cornerRadius = applicationHeight/20 ;
             headBtn.clipsToBounds = YES;
             [cell addSubview:headBtn];
 #pragma mark - 创建 关注 按钮 ，点击后变为  已关注 tag = 777
             /**
              *  创建 关注 按钮 ，点击后变为  已关注
              */
-            myBtn *addFourseBtn = [[myBtn alloc]initWithFrame:CGRectMake(w-80, 10, w/5, 25)];
+            myBtn *addFourseBtn = [[myBtn alloc]initWithFrame:CGRectMake(applicationWidth-80, 10, applicationWidth/5, 25)];
             addFourseBtn.backgroundColor = [UIColor lightGrayColor];
             addFourseBtn.tag = 777;
             addFourseBtn.index = indexPath.row;
             [cell addSubview:addFourseBtn];
-            UILabel *weiboDetilLab = [[UILabel alloc]initWithFrame:CGRectMake(10, h/7.6, w-20, h/2.4)];
+            UILabel *weiboDetilLab = [[UILabel alloc]initWithFrame:CGRectMake(10, applicationHeight/7.6, applicationWidth-20, applicationHeight/2.4)];
             weiboDetilLab.tag = 9527;
             weiboDetilLab.numberOfLines=0;
             [cell addSubview:weiboDetilLab];
@@ -458,7 +589,7 @@
         /**
          *  由于微博内容长度的不同，对CELL进行变换
          */
-         weiboStringsize = [weiboDetilString sizeWithFont:[UIFont systemFontOfSize:17] forWidth:w-20 lineBreakMode:NSLineBreakByWordWrapping];
+         weiboStringsize = [weiboDetilString sizeWithFont:[UIFont systemFontOfSize:17] forWidth:applicationWidth-20 lineBreakMode:NSLineBreakByWordWrapping];
         //NSLog(@"size------------%ld ",size.height);
         
 //        size.width
@@ -496,12 +627,12 @@
             /**
              创建用户的 ID
              */
-            UILabel *useID = [[UILabel alloc]initWithFrame:CGRectMake(w/4, 10, w/2, h/20)];
+            UILabel *useID = [[UILabel alloc]initWithFrame:CGRectMake(applicationWidth/4, 10, applicationWidth/2, applicationHeight/20)];
             [cell addSubview:useID];
             useID.text = @"海贼王";
             useID.textColor = [UIColor redColor];
             // useID.backgroundColor = [UIColor blackColor];
-            UILabel *usePushTime = [[UILabel alloc]initWithFrame:CGRectMake(w/4, 10+h/19, w/4, h/20)];
+            UILabel *usePushTime = [[UILabel alloc]initWithFrame:CGRectMake(applicationWidth/4, 10+applicationHeight/19, applicationWidth/4, applicationHeight/20)];
             [cell addSubview:usePushTime ];
 #pragma mark - 创建时间戳，可以在网上获取，时间
             /**
@@ -529,7 +660,7 @@
             usePushTime.text = returnString;
             usePushTime.textColor = [UIColor blackColor];
             //usePushTime.backgroundColor = [UIColor blackColor];
-            UILabel *useFrom = [[UILabel alloc]initWithFrame:CGRectMake(w/2+2, 10+h/19, w/4, h/20)];
+            UILabel *useFrom = [[UILabel alloc]initWithFrame:CGRectMake(applicationWidth/2+2, 10+applicationHeight/19, applicationWidth/4, applicationHeight/20)];
             [cell addSubview:useFrom];
             useFrom.text = @"from China";
             useFrom.textColor = [UIColor blackColor];
@@ -540,7 +671,7 @@
              *  通过for循环创建三个按钮 =》 点赞，评论，转发
              */
             for (int i=0; i<3; i++) {
-                myBtn *goodSendCommentBtn = [[myBtn alloc]initWithFrame:CGRectMake(i*w/3.1+5, h*3/5-30, w/3.1, 25)];
+                myBtn *goodSendCommentBtn = [[myBtn alloc]initWithFrame:CGRectMake(i*applicationWidth/3.1+5, applicationHeight*3/5-30, applicationWidth/3.1, 25)];
                 goodSendCommentBtn.backgroundColor = [UIColor orangeColor];
                 
                 goodSendCommentBtn.tag = 333+i;
@@ -552,16 +683,16 @@
             /**
              创建头像，的按钮，并设置tag
              */
-            UIButton *headBtn = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, w/6, h/10)];
+            UIButton *headBtn = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, applicationWidth/6, applicationHeight/10)];
             headBtn.tag=666;
-            headBtn.layer.cornerRadius = h/20 ;
+            headBtn.layer.cornerRadius = applicationHeight/20 ;
             headBtn.clipsToBounds = YES;
             [cell addSubview:headBtn];
 #pragma mark - 创建 关注 按钮 ，点击后变为  已关注 tag = 777
             /**
              *  创建 关注 按钮 ，点击后变为  已关注
              */
-            myBtn *addFourseBtn = [[myBtn alloc]initWithFrame:CGRectMake(w-80, 4, w/5, 25)];
+            myBtn *addFourseBtn = [[myBtn alloc]initWithFrame:CGRectMake(applicationWidth-80, 4, applicationWidth/5, 25)];
             addFourseBtn.backgroundColor = [UIColor lightGrayColor];
             addFourseBtn.tag = 777;
             addFourseBtn.index = indexPath.row;
@@ -633,13 +764,13 @@
     /**
      *  由于微博内容长度的不同，对CELL进行变换
      */
-    CGSize asize  = [str sizeWithFont:[UIFont systemFontOfSize:17] forWidth:w-20 lineBreakMode:NSLineBreakByWordWrapping];
+    CGSize asize  = [str sizeWithFont:[UIFont systemFontOfSize:17] forWidth:applicationWidth-20 lineBreakMode:NSLineBreakByWordWrapping];
 
     if (asize.height > 60) {
         return asize.height;
     }
    
-    return h*3/5;
+    return applicationHeight*3/5;
 }
 #pragma mark - 定义表格的头部
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -649,7 +780,7 @@
             /**
               创建四个 Button 分别对应 “热门人物，特别推荐，娱乐明星，当地名人”
              */
-            UIButton *btttn = [[UIButton alloc]initWithFrame:CGRectMake(14+w/4*i, 44, 70, 70)];
+            UIButton *btttn = [[UIButton alloc]initWithFrame:CGRectMake(14+applicationWidth/4*i, 44, 70, 70)];
             btttn.backgroundColor = [UIColor redColor];
             btttn.tag=1000+i;
             [btttn addTarget:self action:@selector(btttnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -658,7 +789,7 @@
             /**
              创建 四个 lab 分别为 “热门人物，特别推荐，娱乐明星，当地名人”
              */
-            UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(14+w/4*i, 44+70+10, 70, 30)];
+            UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(14+applicationWidth/4*i, 44+70+10, 70, 30)];
             //lab.backgroundColor = [UIColor greenColor];
             lab.tag = 2000 + i;
             [tableView addSubview:lab];
@@ -681,7 +812,7 @@
              一个最简单的算法，取余运算！！！
              */
              #pragma mark - 一个最简单的算法，取余运算！！
-            UIButton *btnnn1 = [[UIButton alloc]initWithFrame:CGRectMake(3.5+(7+w/2-7+7)*(i%2), 44+(7+30)*(i/2), w/2, 30)];
+            UIButton *btnnn1 = [[UIButton alloc]initWithFrame:CGRectMake(3.5+(7+applicationWidth/2-7+7)*(i%2), 44+(7+30)*(i/2), applicationWidth/2, 30)];
             /**
              *  将 btnnn1 上的字体颜色，更改为 黑色，系统默认为：白色；
              */
@@ -703,7 +834,7 @@
     /**
      *  创建搜索框
      */
-    UITextField *serchView = [[UITextField alloc]initWithFrame:CGRectMake(7, 7, w-14, 30)];
+    UITextField *serchView = [[UITextField alloc]initWithFrame:CGRectMake(7, 7, applicationWidth-14, 30)];
     serchView.placeholder = @"请输入你想要搜索的内容";
     serchView.backgroundColor = [UIColor whiteColor];
     [tableView addSubview:serchView];

@@ -19,7 +19,7 @@
     self.title = @"微博";
     // Do any additional setup after loading the view.
     
-    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(w/2-40, h/2-40, 80, 80)];
+    UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(applicationWidth/2-40, applicationHeight/2-40, 80, 80)];
     btn.backgroundColor = [UIColor blueColor];
     [btn addTarget:self action:@selector(btnclick) forControlEvents:UIControlEventTouchUpInside];
     
